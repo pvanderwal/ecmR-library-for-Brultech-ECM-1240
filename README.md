@@ -5,6 +5,8 @@ This library provides the interface to the serial port, parses the ECM-1240 pack
 
 The memory array can also be shared with other application using Posix Shared Memory.  Those applications can also link to this library to access the data for individual channels, etc. in the shared memory.
 
+Note:  edd.c is included as an example of how to use this library.  It can store data from ecmR in both an RRD database and an ETSD database https://github.com/pvanderwal/ETSD-Time-Series-Database
+
 The memory array uses the following format:
 Byte    Size    Value
 Addr    bytes
