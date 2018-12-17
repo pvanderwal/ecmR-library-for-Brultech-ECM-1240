@@ -7,6 +7,7 @@ The memory array can also be shared with other application using Posix Shared Me
 
 Note:  edd.c is included as an example of how to use this library.  It can store data from ecmR in both an RRD database and an ETSD database https://github.com/pvanderwal/ETSD-Time-Series-Database
 
+<pre>
 The memory array uses the following format:
 Byte    Size    Value
 Addr    bytes
@@ -31,7 +32,7 @@ Addr    bytes
 58      1       Calculated Checksum, or Packet position if timed out waiting for data
 59      1       last byte received : normaly recieved Checksum unless packet timed out
 60      4       Epoch time of current data
-
+</pre>
 See https://www.brultech.com/software/files/downloadSoft/ECM1240_Packet_format_ver9.pdf
 for detailed information on the ECM1240 packet that this memory array is derived from.
 
