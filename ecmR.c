@@ -1,4 +1,27 @@
-// ECM receiver  shared library
+/*************************************************************************
+ecmR.c library used to receive and parse serial data from an Brultech ECM-1240
+
+Copyright 2018 Peter VanDerWal 
+
+    Note: this code was writen using information from Brultech's document: ECM1240_Packet_format_ver9.pdf
+    Brultech has kindly agreed to let me release this code as 'opensource' software.
+    However, I am not a lawyer and since this code was derived from Brultech's proprietary information, 
+    and I don't have the right to 'give away' their proprietary information, if you intend to use 
+    or distribute this code in a commercial application, you should probably contact Brultech first.  
+    https://www.brultech.com/contact/
+    
+    This code is free: with the above stipulation you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 2.0 as published by
+    the Free Software Foundation.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*********************************************************************************/
 
 #include <stdio.h>
 #include <stdint.h>
@@ -100,6 +123,7 @@ uint8_t ecmR(uint8_t timeOut, uint8_t interV) {
     ELog(__func__, 1);  //log any existing errors and zero ErrorCode
 
     while (1) {
+        loop++;
         while (read(tty_fd,&RX_DATA,1)>0) {
             if (!PACKET_POSITION) {  // in header or lost.
                 if (0xFE == RX_DATA) {
@@ -144,28 +168,26 @@ uint8_t ecmR(uint8_t timeOut, uint8_t interV) {
             if (checksum == RX_DATA) {
                 DATA_VALID = 0; // good packet      
             } else {
-                if(0xFE== RX_DATA)
-                    read(tty_fd,&RX_DATA,1);
-                if (checksum == RX_DATA)
-                    DATA_VALID = 0; // good packet 
-                else {
+                if(0xFE== RX_DATA){
+                    PACKET_POSITION = 64; //try getting one more byte
+                    continue;
+                } else {
                     ErrorCode |= E_CHECKSUM;  //checksum error
                     DATA_VALID = (uint8_t)E_CHECKSUM;
                 }
             }
-            return DATA_VALID?-1:0; 
+            return DATA_VALID; 
         }
         if (loop > timeOut ) {
             ErrorCode |= E_TIMEOUT;
             DATA_VALID = (uint8_t)E_TIMEOUT;
-            return -1; 
+            return DATA_VALID; 
         } 
         usleep(100000);  //100,000 microseconds = 1/10 second
-        loop++;
     } //end while(1)
     ErrorCode |= E_CODING; // Coding error, program should never reach this point
     DATA_VALID = (uint8_t)E_CODING;
-    return -1;
+    return DATA_VALID;
 }
 
 // channel  1-4 = Ch1A, Ch2A, Ch1P, Ch2P, channel 5-9 = Aux1-Aux5, 
