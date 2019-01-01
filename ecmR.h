@@ -1,6 +1,29 @@
-// ECM receiver  :
+/*************************************************************************
+ecmR.h library used to receive and parse serial data from an Brultech ECM-1240
+
+Copyright 2018 Peter VanDerWal 
+
+    Note: this code was writen using information from Brultech's document: ECM1240_Packet_format_ver9.pdf
+    Brultech has kindly agreed to let me release this code as 'opensource' software.
+    However, I am not a lawyer and since this code was derived from Brultech's proprietary information, 
+    and I don't have the right to 'give away' their proprietary information, if you intend to use 
+    or distribute this code in a commercial application, you should probably contact Brultech first.  
+    https://www.brultech.com/contact/
+    
+    This code is free: with the above stipulation you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 2.0 as published by
+    the Free Software Foundation.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*********************************************************************************/
 #ifndef __ecmR_h__
-	#define __ecmR_h__
+#define __ecmR_h__
 
 //	#include <stdarg.h>
 #ifdef _WINDOWS
