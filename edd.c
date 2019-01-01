@@ -15,11 +15,7 @@ Copyright 2018 Peter VanDerWal
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 *********************************************************************************/
-    
 
-*/
-
-#define NO_RRD
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -125,8 +121,7 @@ void saveData(uint8_t interV, uint8_t ecmInvalid){
         // Pete add "other destination" here
         
         // Save to ETSD
-//pete
-LogBlock(&dataU->byteD, 64);
+//pete  LogBlock(&dataU->byteD, "ECM", 64);
         if(ETSD_Type(lp)){    // save channel to etsd
             if (6>ETSD_Type(lp)&&9<SRC_CHAN(lp)){  // saving ecm voltage to 1/2 or 1/4 stream, need to reduce data to fit
                 if ( 11 == SRC_CHAN(lp)){      //ECM AC Voltage
@@ -167,7 +162,7 @@ void readConfig( char *fileName) {
     char configLine[256];
     FILE *fptr;
       
-    if ((fptr = fopen(fileName, "r")) == NULL) {
+    if ( NULL == (fptr = fopen(fileName, "r")) ) {
         Log("<3> Error! opening config file: %s\n", fileName);
         exit(1);
     }
@@ -332,12 +327,12 @@ int main(int argc, char *argv[])  {
         chkErr = ecmR(checkTime, Interval); 
         sleep(1); // give external programs time to update SHM data before storing it  
         saveData(Interval, chkErr);
-Log("main() Interval = %d and blockIntervals = %d\n", Interval, EtsdInfo.blockIntervals);
+//Log("main() Interval = %d and blockIntervals = %d\n", Interval, EtsdInfo.blockIntervals);
         if ( Interval == EtsdInfo.blockIntervals ) {
             if (EtsdInfo.fileName != NULL){
                 if (LogLvl > 2) {
                     Log("<5> About to write the following to the ETSD file: %s\n", EtsdInfo.fileName);
-                    LogBlock(&PBlock.byteD, 512);
+                    LogBlock(&PBlock.byteD, "ETSD", 512);
                 }
                 if( etsdCommit(Interval-1) )
                     ELog(__func__, 1);  
